@@ -17,6 +17,7 @@ URL: https://higherx4racine.github.io/nibrsr/
 Config/Needs/website: rmarkdown
 Imports: 
     dplyr,
+    hiRx (>= 0.1.0),
     purrr,
     readr,
     stringr,
@@ -24,3 +25,5 @@ Imports:
 Depends: 
     R (>= 4.1.0)
 LazyData: true
+Remotes:  
+    higherX4Racine/hiRx
