@@ -1,0 +1,34 @@
+url: https://higherx4racine.github.io/nibrsr/
+
+template:
+  bootstrap: 5
+
+repo:
+  url:
+    home: https://github.com/higherX4Racine/nibrsr
+
+authors:
+  sidebar:
+    roles: [aut, cph]
+  footer:
+    roles: [cph]
+
+destination: pkgdown/docs/
+
+articles:
+
+- title: Investigate the format of the NIBRS
+  desc: >
+    Some notebooks recording how I figured out what I want to do with the NIBRS.
+  contents:
+  - articles/Learning_through_gun_violence
+
+reference:
+
+- title: Glossaries
+  contents:
+  - TYPES_OF_WEAPONS
+
+- title: Extract data from archives
+  contents:
+  - extract_incident_weapons

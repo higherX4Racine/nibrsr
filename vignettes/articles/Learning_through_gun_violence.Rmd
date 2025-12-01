@@ -1,0 +1,76 @@
+---
+title: "Learning through gun violence"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r}
+#| label: setup
+library(nibrsr)
+NIBRS_DIR <- hiRx::input_path("Downloads", "US Dept of Justice", "NIBRS")
+```
+
+```{r}
+#| label: identify-downloads
+
+DOWNLOADS <- NIBRS_DIR |>
+    dir() |>
+    tibble::tibble(
+        File = _
+    ) |>
+    dplyr::mutate(
+        State = stringr::str_extract(.data$File,
+                                     "^.{2}"),
+        Year = .data$File |>
+            stringr::str_extract("\\d{4}") |>
+            as.integer(),
+        Contents = purrr::map(
+            .data$File,
+            \(.f) NIBRS_DIR |>
+                file.path(.f) |>
+                zip::zip_list()
+        ),
+        Weapons = purrr::map2(file.path(NIBRS_DIR, .data$File), .data$Contents,
+                              extract_incident_weapons),
+        `Agency File` = purrr::map_chr(
+            .data$Contents,
+            \(.contents) .contents |>
+                dplyr::pull("filename") |>
+                stringr::str_subset("agencies")
+        ),
+        `Incident File` = purrr::map_chr(
+            .data$Contents,
+            \(.contents) .contents |>
+                dplyr::pull("filename") |>
+                stringr::str_subset("NIBRS_incident")
+        )
+        
+    ) |>
+    dplyr::arrange(
+        .data$Year,
+        .data$State
+    )
+
+DOWNLOADS |>
+    dplyr::select(!tidyselect::where(\(.) "list" %in% class(.))) |>
+    knitr::kable()
+```
+
+```{r}
+#| label: load-weapons
+
+WEAPON_TYPES <- DOWNLOADS |>
+    dplyr::pull("Weapons") |>
+    purrr::list_rbind() |>
+    dplyr::select("weapon_code") |>
+    dplyr::distinct() |>
+    dplyr::arrange(.data$weapon_code) |>
+    dplyr::left_join(TYPES_OF_WEAPONS, by = "weapon_code")
+
+knitr::kable(WEAPON_TYPES)
+```

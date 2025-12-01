@@ -14,3 +14,13 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 URL: https://higherx4racine.github.io/nibrsr/
+Config/Needs/website: rmarkdown
+Imports: 
+    dplyr,
+    purrr,
+    readr,
+    stringr,
+    zip
+Depends: 
+    R (>= 4.1.0)
+LazyData: true
