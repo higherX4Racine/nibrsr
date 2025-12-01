@@ -14,9 +14,12 @@ extract_agencies <- function(.archive_path, .contents = NULL) {
             tolower
         )
 
-    .date_format <- dplyr::if_else(.text_data$data_year[1] == "2020",
-                                   "%D-%b-%y",
-                                   "%Y-%m-%D")
+    .date_format <- dplyr::if_else(
+        any(stringr::str_detect(.text_data$nibrs_cert_date, "[a-zA-Z]")),
+        "%d-%b-%y",
+        "%Y-%m-%d"
+    )
+
     readr::type_convert(
         .text_data,
         col_types =  list(
