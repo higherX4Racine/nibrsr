@@ -12,6 +12,7 @@ extract_archived_csv <- function(.archive_path, .component_path, .spec) {
             filename = .component_path
         ) |>
         readr::read_csv(
-            col_types = .spec
+            col_types = .spec,
+            name_repair = "unique_quiet"
         )
 }

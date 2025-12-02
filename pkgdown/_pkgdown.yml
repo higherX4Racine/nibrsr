@@ -27,8 +27,11 @@ reference:
 
 - title: Glossaries
   contents:
+  - GLOSSARY_OF_PARENT_POPULATION_GROUPS
+  - GLOSSARY_OF_POPULATION_GROUPS
   - TYPES_OF_WEAPONS
 
 - title: Extract data from archives
   contents:
+  - extract_agencies
   - extract_incident_weapons

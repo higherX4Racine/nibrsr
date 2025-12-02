@@ -1,5 +1,34 @@
 ## Copyright (C) 2025 by Higher Expectations
 
+#' Categories of containing geographic areas in the NIBRS
+#'
+#' These categories combine both political organization (town, city, county) and
+#' population size.
+#'
+#' @format an object of type `tibble/tbl_df/tbl/data.frame`
+#' with 9 rows and 2 columns
+#' \describe{
+#'  \item{parent_pop_group_code}{`<int>` an index that may not be consistent across archives}
+#'  \item{parent_pop_group_desc}{`<chr>` a short description of the size and nature of the area}
+#' }
+#' @source <https://cde.ucr.cjis.gov/LATEST/webapp/>
+"GLOSSARY_OF_PARENT_POPULATION_GROUPS"
+
+#' Categories of geographic area in the NIBRS
+#'
+#' These categories combine both political organization (town, city, county) and
+#' population size.
+#'
+#' @format an object of type `tibble/tbl_df/tbl/data.frame`
+#' with 17 rows and 3 columns
+#' \describe{
+#'  \item{population_group_id}{`<int>` an index that may not be consistent across archives}
+#'  \item{population_group_code}{`<chr>` a digit-plus-optional-letter code that may be consistent}
+#'  \item{population_group_desc}{`<chr>` a short description of the size and nature of the area}
+#' }
+#' @source <https://cde.ucr.cjis.gov/LATEST/webapp/>
+"GLOSSARY_OF_POPULATION_GROUPS"
+
 #' Weapon categories in the NIBRS
 #'
 #' There is no limit to the number of weapons that might be reported with an
