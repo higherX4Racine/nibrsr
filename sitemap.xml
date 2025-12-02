@@ -1,12 +1,19 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
-<url><loc>/404.html</loc></url>
-<url><loc>/CODE_OF_CONDUCT.html</loc></url>
-<url><loc>/CONTRIBUTING.html</loc></url>
-<url><loc>/LICENSE-text.html</loc></url>
-<url><loc>/LICENSE.html</loc></url>
-<url><loc>/SUPPORT.html</loc></url>
-<url><loc>/authors.html</loc></url>
-<url><loc>/index.html</loc></url>
-<url><loc>/reference/index.html</loc></url>
+<url><loc>https://higherx4racine.github.io/nibrsr/404.html</loc></url>
+<url><loc>https://higherx4racine.github.io/nibrsr/CODE_OF_CONDUCT.html</loc></url>
+<url><loc>https://higherx4racine.github.io/nibrsr/CONTRIBUTING.html</loc></url>
+<url><loc>https://higherx4racine.github.io/nibrsr/LICENSE-text.html</loc></url>
+<url><loc>https://higherx4racine.github.io/nibrsr/LICENSE.html</loc></url>
+<url><loc>https://higherx4racine.github.io/nibrsr/SUPPORT.html</loc></url>
+<url><loc>https://higherx4racine.github.io/nibrsr/authors.html</loc></url>
+<url><loc>https://higherx4racine.github.io/nibrsr/index.html</loc></url>
+<url><loc>https://higherx4racine.github.io/nibrsr/reference/GLOSSARY_OF_PARENT_POPULATION_GROUPS.html</loc></url>
+<url><loc>https://higherx4racine.github.io/nibrsr/reference/GLOSSARY_OF_POPULATION_GROUPS.html</loc></url>
+<url><loc>https://higherx4racine.github.io/nibrsr/reference/TYPES_OF_WEAPONS.html</loc></url>
+<url><loc>https://higherx4racine.github.io/nibrsr/reference/extract_agencies.html</loc></url>
+<url><loc>https://higherx4racine.github.io/nibrsr/reference/extract_archived_csv.html</loc></url>
+<url><loc>https://higherx4racine.github.io/nibrsr/reference/extract_incident_weapons.html</loc></url>
+<url><loc>https://higherx4racine.github.io/nibrsr/reference/index.html</loc></url>
+<url><loc>https://higherx4racine.github.io/nibrsr/reference/nibrsr-package.html</loc></url>
 </urlset>
 

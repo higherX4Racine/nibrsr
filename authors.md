@@ -9,11 +9,12 @@
 ## Citation
 
 Taft B (2025). *nibrsr: What the Package Does (One Line, Title Case)*. R
-package version 0.0.0.9000.
+package version 0.0.0.9000, <https://higherx4racine.github.io/nibrsr/>.
 
     @Manual{,
       title = {nibrsr: What the Package Does (One Line, Title Case)},
       author = {Ben Taft},
       year = {2025},
       note = {R package version 0.0.0.9000},
+      url = {https://higherx4racine.github.io/nibrsr/},
     }
