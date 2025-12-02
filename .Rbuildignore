@@ -11,4 +11,5 @@
 ^docs$
 ^pkgdown$
 ^vignettes/articles$
+^vignettes/Learning_through_gun_violence.Rmd$
 ^data-raw$
