@@ -1,0 +1,39 @@
+weapon_code,weapon_name,shr_flag
+01,Unarmed,FALSE
+11,Firearm,TRUE
+11A,Firearm (Automatic),FALSE
+12,Handgun,TRUE
+12A,Handgun (Automatic),FALSE
+13,Rifle,TRUE
+13A,Rifle (Automatic),FALSE
+14,Shotgun,TRUE
+14A,Shotgun (Automatic),FALSE
+15,Other Firearm,TRUE
+15A,Other Firearm (Automatic),FALSE
+16,Lethal Cutting Instrument,FALSE
+17,Club/Blackjack/Brass Knuckles,FALSE
+20,Knife/Cutting Instrument,TRUE
+21,Firearm,FALSE
+21A,Firearm (Automatic),FALSE
+22,Handgun,FALSE
+22A,Handgun (Automatic),FALSE
+23,Rifle,FALSE
+23A,Rifle (Automatic),FALSE
+24,Shotgun,FALSE
+24A,Shotgun (Automatic),FALSE
+25,Other Firearm,FALSE
+25A,Other Firearm (Automatic),FALSE
+30,Blunt Object,TRUE
+35,Motor Vehicle/Vessel,FALSE
+40,Personal Weapons,TRUE
+50,Poison,TRUE
+55,Pushed or Thrown Out Window,TRUE
+60,Explosives,TRUE
+65,Fire/Incendiary Device,TRUE
+70,Drugs/Narcotics/Sleeping Pills,TRUE
+75,Drowning,TRUE
+80,Strangulation - Include Hanging,TRUE
+85,Asphyxiation,TRUE
+90,Other,TRUE
+95,Unknown,FALSE
+99,None,FALSE

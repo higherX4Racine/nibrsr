@@ -16,18 +16,17 @@ an object of class \code{tibble/tbl_df/tbl/data.frame}
 with 8 columns
 \describe{
 \item{data_year}{\verb{<int>} The year of the offense}
-\item{offense_id}{\verb{<int>} The unique identification number for the offense}
 \item{incident_id}{\verb{<int>} The unique id of the incident that involved the offense}
 \item{offense_code}{\verb{<chr>} A three-digit code describing the offense that occurred}
 \item{attempt_complete_flag}{\verb{<chr>} either "A" (attempted), "C" (completed), or "U" (unfounded).}
-\item{location_id}{\verb{<int>} An index into the archive's table of location types}
-\item{num_premises_entered}{\verb{<chr>}}
-\item{method_entry_code}{\verb{<chr>}}
+\item{location_code}{\verb{<chr>} A two-digit code that describes the scene where the offense took place}
+\item{num_premises_entered}{\verb{<int>} if a burglary at a hotel or storage facility, the number of units that were violated}
+\item{method_entry_code}{\verb{<chr>}if a burglary, whether entry was forced (F), or not (N)}
 }
 }
 \description{
 Read details about specific offenses from an NIBRS archive.
 }
 \seealso{
-\link{GLOSSARY_OF_OFFENSE_CODES}
+\link{GLOSSARY_OF_OFFENSE_TYPES}
 }

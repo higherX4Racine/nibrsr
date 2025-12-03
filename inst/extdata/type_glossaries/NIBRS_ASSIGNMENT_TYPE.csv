@@ -1,0 +1,8 @@
+assignment_type_code,assignment_type_name
+F,Two-Officer Vehicle
+G,One-Officer (Alone)
+H,One-Officer (Assisted)
+I,Detective or Special Assignment (Alone)
+J,Detective or Special Assignment (Assisted)
+K,Other (Alone)
+L,Other (Assisted)

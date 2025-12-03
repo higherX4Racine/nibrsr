@@ -1,0 +1,87 @@
+offense_code,offense_name,crime_against,ct_flag,hc_flag,hc_code,offense_category_name,offense_group
+09A,Murder and Nonnegligent Manslaughter,Person,FALSE,TRUE,01,Homicide Offenses,A
+09B,Negligent Manslaughter,Person,FALSE,TRUE,,Homicide Offenses,A
+09C,Justifiable Homicide,Person,FALSE,FALSE,,Homicide Offenses,A
+100,Kidnapping/Abduction,Person,FALSE,TRUE,,Kidnapping/Abduction,A
+101,Treason,Society,FALSE,TRUE,,Other Offenses,A
+103,Espionage,Society,FALSE,TRUE,,Other Offenses,A
+11A,Rape,Person,FALSE,TRUE,02,Sex Offenses,A
+11B,Sodomy,Person,FALSE,TRUE,02,Sex Offenses,A
+11C,Sexual Assault With An Object,Person,FALSE,TRUE,02,Sex Offenses,A
+11D,Criminal Sexual Contact,Person,FALSE,TRUE,02,Sex Offenses,A
+120,Robbery,Property,TRUE,TRUE,03,Robbery,A
+13A,Aggravated Assault,Person,FALSE,TRUE,04,Assault Offenses,A
+13B,Simple Assault,Person,FALSE,TRUE,09,Assault Offenses,A
+13C,Intimidation,Person,FALSE,TRUE,10,Assault Offenses,A
+200,Arson,Property,FALSE,TRUE,08,Arson,A
+210,Extortion/Blackmail,Property,TRUE,TRUE,,Extortion/Blackmail,A
+220,Burglary/Breaking & Entering,Property,TRUE,TRUE,05,Burglary/Breaking & Entering,A
+23*,Not Specified,Property,FALSE,TRUE,06,Larceny/Theft Offenses,A
+23A,Pocket-picking,Property,FALSE,TRUE,,Larceny/Theft Offenses,A
+23B,Purse-snatching,Property,FALSE,TRUE,,Larceny/Theft Offenses,A
+23C,Shoplifting,Property,FALSE,TRUE,,Larceny/Theft Offenses,A
+23D,Theft From Building,Property,TRUE,TRUE,,Larceny/Theft Offenses,A
+23E,Theft From Coin-Operated Machine or Device,Property,FALSE,TRUE,,Larceny/Theft Offenses,A
+23F,Theft From Motor Vehicle,Property,TRUE,TRUE,,Larceny/Theft Offenses,A
+23G,Theft of Motor Vehicle Parts or Accessories,Property,FALSE,TRUE,,Larceny/Theft Offenses,A
+23H,All Other Larceny,Property,TRUE,TRUE,,Larceny/Theft Offenses,A
+240,Motor Vehicle Theft,Property,TRUE,TRUE,07,Motor Vehicle Theft,A
+250,Counterfeiting/Forgery,Property,FALSE,TRUE,,Counterfeiting/Forgery,A
+26A,False Pretenses/Swindle/Confidence Game,Property,TRUE,TRUE,,Fraud Offenses,A
+26B,Credit Card/Automated Teller Machine Fraud,Property,TRUE,TRUE,,Fraud Offenses,A
+26C,Impersonation,Property,TRUE,TRUE,,Fraud Offenses,A
+26D,Welfare Fraud,Property,FALSE,TRUE,,Fraud Offenses,A
+26E,Wire Fraud,Property,TRUE,TRUE,,Fraud Offenses,A
+26F,Identity Theft,Property,TRUE,TRUE,,Fraud Offenses,A
+26G,Hacking/Computer Invasion,Property,TRUE,TRUE,,Fraud Offenses,A
+26H,Money Laundering,Society,FALSE,TRUE,,Other Offenses,A
+270,Embezzlement,Property,TRUE,TRUE,,Embezzlement,A
+280,Stolen Property Offenses,Property,FALSE,TRUE,,Stolen Property Offenses,A
+290,Destruction/Damage/Vandalism of Property,Property,FALSE,TRUE,11,Destruction/Damage/Vandalism of Property,A
+30A,Illegal Entry into the United States,Society,FALSE,TRUE,,Other Offenses,A
+30B,False Citizenship,Society,FALSE,TRUE,,Other Offenses,A
+30C,Smuggling Aliens,Society,FALSE,TRUE,,Other Offenses,A
+30D,Re-entry after Deportation,Society,FALSE,TRUE,,Other Offenses,A
+35A,Drug/Narcotic Violations,Society,FALSE,TRUE,,Drug/Narcotic Offenses,A
+35B,Drug Equipment Violations,Society,FALSE,TRUE,,Drug/Narcotic Offenses,A
+360,Failure to Register as a Sex Offender,Society,FALSE,TRUE,,Other Offenses,A
+36A,Incest,Person,FALSE,TRUE,,"Sex Offenses, Non-forcible",A
+36B,Statutory Rape,Person,FALSE,TRUE,,"Sex Offenses, Non-forcible",A
+370,Pornography/Obscene Material,Society,FALSE,TRUE,,Pornography/Obscene Material,A
+39A,Betting/Wagering,Society,FALSE,TRUE,,Gambling Offenses,A
+39B,Operating/Promoting/Assisting Gambling,Society,FALSE,TRUE,,Gambling Offenses,A
+39C,Gambling Equipment Violation,Society,FALSE,TRUE,,Gambling Offenses,A
+39D,Sports Tampering,Society,FALSE,TRUE,,Gambling Offenses,A
+40A,Prostitution,Society,FALSE,TRUE,,Prostitution Offenses,A
+40B,Assisting or Promoting Prostitution,Society,FALSE,TRUE,,Prostitution Offenses,A
+40C,Purchasing Prostitution,Society,FALSE,TRUE,,Prostitution Offenses,A
+49A,Harboring Escapee/Concealing from Arrest,Society,FALSE,TRUE,,Other Offenses,A
+49B,Flight to Avoid Prosecution,Society,FALSE,TRUE,,Other Offenses,A
+49C,Flight to Avoid Deportation,Society,FALSE,TRUE,,Other Offenses,A
+510,Bribery,Property,TRUE,TRUE,,Bribery,A
+520,Weapon Law Violations,Society,FALSE,TRUE,,Weapon Law Violations,A
+521,Violation of National Firearm Act of 1934,Society,FALSE,TRUE,,Other Offenses,A
+522,Weapons of Mass Destruction,Society,FALSE,TRUE,,Other Offenses,A
+526,Explosives Violation,Society,FALSE,TRUE,,Other Offenses,A
+58A,Import Violations,Society,FALSE,TRUE,,Other Offenses,A
+58B,Export Violations,Society,FALSE,TRUE,,Other Offenses,A
+61A,Federal Liquor Offenses,Society,FALSE,TRUE,,Other Offenses,A
+61B,Federal Tobacco Offenses,Society,FALSE,TRUE,,Other Offenses,A
+620,Wildlife Trafficking,Society,FALSE,TRUE,,Other Offenses,A
+64A,"Human Trafficking, Commercial Sex Acts",Person,FALSE,TRUE,12,Human Trafficking,A
+64B,"Human Trafficking, Involuntary Servitude",Person,FALSE,TRUE,13,Human Trafficking,A
+720,Animal Cruelty,Society,FALSE,TRUE,,Animal Cruelty,A
+90A,Bad Checks,Property,FALSE,FALSE,,Bad Checks,B
+90B,Curfew/Loitering/Vagrancy Violations,Society,FALSE,FALSE,,Curfew/Loitering/Vagrancy Violations,B
+90C,Disorderly Conduct,Society,FALSE,FALSE,,Disorderly Conduct,B
+90D,Driving Under the Influence,Society,FALSE,FALSE,,Driving Under the Influence,B
+90E,Drunkenness,Society,FALSE,FALSE,,Drunkenness,B
+90F,"Family Offenses, Nonviolent",Person,FALSE,FALSE,,"Family Offenses, Nonviolent",B
+90G,Liquor Law Violations,Society,FALSE,FALSE,,Liquor Law Violations,B
+90H,Peeping Tom,Person,FALSE,FALSE,,Peeping Tom,B
+90I,Runaway,Not a Crime,FALSE,FALSE,,Other Offenses,
+90J,Trespass of Real Property,Society,FALSE,FALSE,,Trespass of Real Property,B
+90K,Failure to Appear,Society,FALSE,FALSE,,Other Offenses,B
+90L,Federal Resource Violations,Society,FALSE,FALSE,,Other Offenses,B
+90M,Perjury,Society,FALSE,FALSE,,Other Offenses,B
+90Z,All Other Offenses,Society,FALSE,FALSE,,All Other Offenses,B

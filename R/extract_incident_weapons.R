@@ -14,7 +14,7 @@
 #'  \item{weapon_code}{`<chr>` a code for the type of weapon used in the crime}
 #'  \item{shr_flag}{`<chr>` whether or not this crime was reported through a summary tool.}
 #' }
-#' @seealso [TYPES_OF_WEAPONS] for definitions of each weapon code
+#' @seealso [GLOSSARY_OF_WEAPON_TYPES] for definitions of each weapon code
 #' @export
 extract_incident_weapons <- function(.archive_path, .contents = NULL) {
     if (is.null(.contents)) {

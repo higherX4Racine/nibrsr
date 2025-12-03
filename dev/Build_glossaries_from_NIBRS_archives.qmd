@@ -1,0 +1,190 @@
+---
+title: "Build glossaries from NIBRS archives"
+author: "Ben Taft"
+format: html
+---
+
+```{r}
+#| label: setup
+#| include: false
+set.seed(42L)
+rlang::exec(
+    knitr::opts_chunk$set,
+    !!!hiRx::CHUNK_OPTIONS_FOR_KNITR,
+    cache = TRUE
+)
+```
+
+```{r}
+#| label: identify-files
+NIBRS_DIR <- hiRx::input_path("Downloads", "US Dept of Justice", "NIBRS")
+ARCHIVE_FILES <- dir(NIBRS_DIR, full.names = TRUE)
+```
+
+```{r}
+#| label: read-tables-of-contents
+#| dependson:
+#| - identify-files
+
+TOC <- ARCHIVE_FILES |>
+    rlang::set_names(
+        basename(ARCHIVE_FILES)
+    ) |>
+    tibble::enframe(
+        name = "File",
+        value = "Contents"
+    ) |>
+    dplyr::mutate(
+        State = stringr::str_extract(.data$File,
+                                     "^.{2}"),
+        Year = .data$File |>
+            stringr::str_extract("\\d{4}") |>
+            as.integer(),
+        Contents = purrr::map(
+            .data$Contents,
+            zip::zip_list
+        )
+    )
+```
+
+```{r}
+#| label: discover-type-files
+#| dependson:
+#| - read-tables-of-contents
+
+TYPE_FILES <- TOC$Contents |>
+    purrr::list_rbind() |>
+    dplyr::pull("filename") |>
+    stringr::str_subset(
+        stringr::regex("type", ignore_case = TRUE)
+    ) |>
+    basename() |>
+    unique() |>
+    sort()
+
+print(TYPE_FILES)
+```
+
+```{r}
+#| label: extract-type-tables
+#| dependson:
+#| - identify-files
+#| - discover-type-files
+
+TYPE_TABLES <- TYPE_FILES |>
+    rlang::set_names(
+        TYPE_FILES |>
+            stringr::str_extract("(?<=NIBRS_)\\w+(?=_TYPE\\.csv)") |>
+            stringr::str_replace_all("_", " ") |>
+            stringr::str_to_title()
+    ) |>
+    purrr::map(
+        \(.component_basename) {
+            ARCHIVE_FILES |>
+                purrr::map(
+                    \(.path) {
+                        .component_path <- .path |>
+                            zip::zip_list() |>
+                            dplyr::pull("filename") |>
+                            stringr::str_subset(.component_basename)
+                        .path |>
+                            nibrsr:::extract_archived_csv(
+                                .component_path,
+                                list(.default = "c")
+                            ) |>
+                            dplyr::select(
+                                !tidyselect::ends_with("id")
+                            )
+                    }
+                ) |>
+                purrr::list_rbind() |>
+                dplyr::mutate(
+                    dplyr::across(tidyselect::ends_with("flag"),
+                                  \(.) dplyr::case_match(.,
+                                                         c("Y", "t") ~ TRUE,
+                                                         c("N", "f") ~ FALSE,
+                                                         .default = NA))
+                ) |>
+                dplyr::distinct() |>
+                dplyr::arrange(
+                    dplyr::across(tidyselect::ends_with("code"))
+                )
+        }
+    )
+```
+
+```{r}
+#| label: view-type-tables
+#| dependson:
+#| - extract-type-tables
+#| output: asis
+
+purrr::iwalk(
+    TYPE_TABLES,
+    \(.glossary, .label) {
+        cat("###", .label, "\n\n")
+        .glossary |> knitr::kable() |> print()
+        cat("\n\n")
+    }
+)
+```
+
+```{r}
+#| label: save-type-tables
+#| dependson:
+#| - extract-type-tables
+#| - discover-type-files
+
+purrr::walk2(
+    TYPE_TABLES, TYPE_FILES,
+    \(.table, .file) readr::write_csv(.table,
+                                      file.path("stage", .file))
+)
+
+```
+
+```{r}
+#| label: write-data-raw-files
+#| dependson:
+#| - discover-type-files
+
+purrr::walk2(
+    TYPE_FILES, TYPE_TABLES,
+    \(.file, .table) {
+        
+        .spec <- .table |>
+            names() |>
+            paste("= \"\"", collapse = ",\n            ")
+
+        .glossary <- .file |>
+            stringr::str_replace("NIBRS",
+                                 "GLOSSARY_OF") |>
+            stringr::str_replace("\\.csv",
+                                 "S")
+        
+        .text <- glue::glue(
+            "## Copyright (C) {.year} by Higher Expectations for Racine County",
+            "",
+            "{.glossary} <- \"extdata\" |>",
+            "    system.file(",
+            "        \"type_glossaries\",",
+            "        {glue::double_quote(.file)},",
+            "        package = \"nibrsr\"",
+            "    ) |>",
+            "    readr::read_csv(",
+            "        col_types = list(",
+            "            {.spec}",
+            "        )",
+            "    )",
+            "",
+            "usethis::use_data({.glossary}, overwrite = TRUE)",
+            "",
+            "str({.glossary})",
+            .year = lubridate::year(lubridate::today()),
+            .sep = "\n"
+        )
+        
+        cat(.text,
+            file = file.path("stage", paste0(.glossary, ".R")))
+    })
+```

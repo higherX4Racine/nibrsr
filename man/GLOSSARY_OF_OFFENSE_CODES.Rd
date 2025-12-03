@@ -5,7 +5,7 @@
 \alias{GLOSSARY_OF_OFFENSE_CODES}
 \title{Categories of criminal offense that are cataloged in the NIBRS}
 \format{
-an object of type \code{tibble/tbl_df/tbl/data.frame}
+an object of type \code{spec_tbl_df/tbl_df/tbl/data.frame}
 with 81 rows and 6 columns
 \describe{
 \item{Group}{\verb{<chr>} Either "A" (serious crimes) or "B" (not so serious)}

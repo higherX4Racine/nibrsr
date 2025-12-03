@@ -1,6 +1,6 @@
 ---
 title: "Learning through gun violence"
-output: html
+format: html
 ---
 
 ```{r}
@@ -59,6 +59,7 @@ ARCHIVE_FILES <- c(
     weapons = "NIBRS_WEAPON.csv",
     weapon_types = "NIBRS_WEAPON_TYPE.csv",
     offenses = "NIBRS_OFFENSE.csv",
+    locations = "NIBRS_LOCATION_TYPE.csv",
     incidents = "NIBRS_incident.csv",
     agencies = "agencies.csv"
 )
@@ -68,9 +69,7 @@ WI_MMXXII <- purrr::map(
     \(.csv_file) {
         NIBRS_DIR |>
             file.path("WI-2022.zip") |>
-            nibrsr:::extract_archived_csv(.csv_file,
-                                          c(.default = "c")) |>
-            dplyr::rename_with(tolower)
+            nibrsr:::extract_archived_csv(.csv_file)
     }
 )
 
@@ -88,16 +87,20 @@ TEST_ARCHIVE$weapons <- dplyr::slice_sample(WI_MMXXII$weapons,
                                             n = 10L)
 
 TEST_ARCHIVE$weapon_types <- dplyr::semi_join(WI_MMXXII$weapon_types,
-                                          TEST_ARCHIVE$weapons,
-                                          by = "weapon_id")
+                                              TEST_ARCHIVE$weapons,
+                                              by = "weapon_id")
 
 TEST_ARCHIVE$offenses <- dplyr::semi_join(WI_MMXXII$offenses,
                                           TEST_ARCHIVE$weapons,
                                           by = "offense_id")
 
+TEST_ARCHIVE$locations <- dplyr::semi_join(WI_MMXXII$locations,
+                                           TEST_ARCHIVE$offenses,
+                                           by = "location_id")
+
 TEST_ARCHIVE$incidents <- dplyr::semi_join(WI_MMXXII$incidents,
-                                          TEST_ARCHIVE$offenses,
-                                          by = "incident_id")
+                                           TEST_ARCHIVE$offenses,
+                                           by = "incident_id")
 
 TEST_ARCHIVE$agencies <- dplyr::semi_join(WI_MMXXII$agencies,
                                           TEST_ARCHIVE$incidents,
@@ -105,7 +108,6 @@ TEST_ARCHIVE$agencies <- dplyr::semi_join(WI_MMXXII$agencies,
 
 knitr::kable(TEST_ARCHIVE$agencies)
 ```
-
 
 ```{r}
 #| label: write-test-archive
@@ -132,4 +134,165 @@ withr::with_dir("..", {
         file.remove()
 })
 
+```
+
+```{r}
+#| label: load-violent-gun-crimes
+#| dependson:
+#| - examine-contents
+
+GUNS <- dplyr::filter(
+    nibrsr::GLOSSARY_OF_WEAPON_TYPES,
+    stringr::str_detect(.data$weapon_code,
+                        "^[12][1-5]A?")
+)
+    
+VIOLENCE <- dplyr::filter(
+    nibrsr::GLOSSARY_OF_OFFENSE_TYPES,
+    .data$crime_against == "Person"
+)
+
+VIOLENT_GUN_CRIMES <- CONTENTS$File |>
+    purrr::map2(
+        CONTENTS$Contents,
+        \(.fn, .contents) {
+            
+            .wpn <- NIBRS_DIR |>
+                file.path(.fn) |>
+                nibrsr::extract_incident_weapons(.contents) |>
+                dplyr::semi_join(GUNS, by = "weapon_code")
+            
+            .off <- NIBRS_DIR |>
+                file.path(.fn) |>
+                nibrsr::extract_offenses(.contents) |>
+                dplyr::semi_join(VIOLENCE, by = "offense_code") |>
+                dplyr::semi_join(.wpn, by = "offense_id")
+            
+            .inc <- NIBRS_DIR |>
+                file.path(.fn) |>
+                nibrsr::extract_incidents(.contents) |>
+                dplyr::semi_join(.off, by = "incident_id")
+            
+            .inc |>
+                dplyr::left_join(.off, by = c("data_year", "incident_id")) |>
+                dplyr::left_join(.wpn, by = c("data_year", "offense_id"))
+        }
+    ) |>
+    purrr::list_rbind()
+
+VIOLENT_GUN_CRIMES |>
+    dplyr::slice_sample(n = 10) |>
+    knitr::kable()
+```
+        
+```{r}
+#| label: look-at-date-distributions
+VIOLENT_GUN_CRIMES |>
+    dplyr::inner_join(
+        nibrsr::GLOSSARY_OF_OFFENSE_TYPES,
+        by = "offense_code"
+    ) |>
+    dplyr::filter(
+        !is.na(.data$incident_date)
+    ) |>
+    dplyr::mutate(
+        Year = lubridate::year(.data$incident_date),
+        Month = lubridate::month(.data$incident_date),
+        Category = .data$offense_category_name
+    ) |>
+    dplyr::count(
+        .data$incident_id,
+        .data$Year,
+        .data$Month,
+        .data$Category
+    ) |>
+    dplyr::count(
+        .data$Year,
+        .data$Month,
+        .data$Category,
+        name = "Frequency"
+    ) |>
+    ggplot2::ggplot(
+        ggplot2::aes(
+            x = .data$Month,
+            y = .data$Frequency,
+            color = factor(.data$Year)
+        )
+    ) + 
+    ggplot2::geom_line(
+        linewidth = hiRx::PHI,
+        lineend = "round",
+        linejoin = "bevel"
+    ) +
+    ggplot2::scale_x_continuous(
+        name = NULL,
+        breaks = seq(1, 12, 3),
+        minor_breaks = 1:12,
+        labels = month.abb[seq(1, 12, 3)]
+    ) +
+    ggplot2::scale_color_viridis_d(
+        name = NULL
+    ) +
+    ggplot2::facet_wrap(
+        facets = ggplot2::vars(.data$Category),
+        scales = "free_y"
+    ) +
+    ggplot2::theme_bw()
+```
+
+```{r}
+#| label: look-at-time-distributions
+VIOLENT_GUN_CRIMES |>
+    dplyr::inner_join(
+        nibrsr::GLOSSARY_OF_OFFENSE_TYPES,
+        by = "offense_code"
+    ) |>
+    dplyr::filter(
+        !is.na(.data$incident_date)
+    ) |>
+    dplyr::mutate(
+        Year = lubridate::year(.data$incident_date),
+        Category = .data$offense_category_name
+    ) |>
+    dplyr::count(
+        .data$incident_id,
+        .data$Year,
+        .data$incident_hour,
+        .data$Category
+    ) |>
+    dplyr::count(
+        .data$Year,
+        .data$incident_hour,
+        .data$Category,
+        name = "Frequency"
+    ) |>
+    ggplot2::ggplot(
+        ggplot2::aes(
+            x = .data$incident_hour,
+            y = .data$Frequency,
+            color = factor(.data$Year)
+        )
+    ) + 
+    ggplot2::geom_line(
+        linewidth = hiRx::PHI,
+        lineend = "round",
+        linejoin = "bevel"
+    ) +
+    ggplot2::scale_x_continuous(
+        name = "Hour of Day",
+        breaks = scales::breaks_width(6),
+        minor_breaks = scales::breaks_width(1)
+    ) +
+    ggplot2::scale_y_continuous(
+        name = "Number of incidents",
+        limits = c(0, NA)
+    ) +
+    ggplot2::scale_color_viridis_d(
+        name = NULL
+    ) +
+    ggplot2::facet_wrap(
+        facets = ggplot2::vars(.data$Category),
+        scales = "free_y"
+    ) +
+    ggplot2::theme_bw()
 ```

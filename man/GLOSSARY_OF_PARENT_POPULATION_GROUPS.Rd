@@ -5,7 +5,7 @@
 \alias{GLOSSARY_OF_PARENT_POPULATION_GROUPS}
 \title{Categories of containing geographic areas in the NIBRS}
 \format{
-an object of type \code{tibble/tbl_df/tbl/data.frame}
+an object of type \code{spec_tbl_df/tbl_df/tbl/data.frame}
 with 9 rows and 2 columns
 \describe{
 \item{parent_pop_group_code}{\verb{<int>} an index that may not be consistent across archives}

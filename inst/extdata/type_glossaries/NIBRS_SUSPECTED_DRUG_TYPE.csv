@@ -1,0 +1,19 @@
+suspected_drug_code,suspected_drug_name
+A,Crack Cocaine
+B,Cocaine
+C,Hashish
+D,Heroin
+E,Marijuana
+F,Morphine
+G,Opium
+H,Other Narcotics
+I,LSD
+J,PCP
+K,Other Hallucingens
+L,Meth/ Amphetamines
+M,Other Stimulants
+N,Barbiturates
+O,Other Depressants
+P,Other Drugs
+U,Unknown
+X,More Than 3 Types

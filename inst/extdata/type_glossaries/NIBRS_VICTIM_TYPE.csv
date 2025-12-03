@@ -1,0 +1,10 @@
+victim_type_code,victim_type_name
+B,Business
+F,Financial Institution
+G,Government
+I,Individual
+L,Law Enforcement Officer
+O,Other
+R,Religious Organization
+S,Society/Public
+U,Unknown

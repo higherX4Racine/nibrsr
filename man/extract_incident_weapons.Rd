@@ -26,5 +26,5 @@ with 5 columns
 Load weapon information from an NIBRS archive
 }
 \seealso{
-\link{TYPES_OF_WEAPONS} for definitions of each weapon code
+\link{GLOSSARY_OF_WEAPON_TYPES} for definitions of each weapon code
 }

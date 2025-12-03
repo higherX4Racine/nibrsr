@@ -16,6 +16,6 @@
        8      2022  192312197   160879249 520          C                    
        9      2022  192314311   160881137 520          C                    
       10      2022  201574172   168949303 13A          C                    
-      # i 3 more variables: location_id <int>, num_premises_entered <chr>,
+      # i 3 more variables: location_code <chr>, num_premises_entered <int>,
       #   method_entry_code <chr>
 

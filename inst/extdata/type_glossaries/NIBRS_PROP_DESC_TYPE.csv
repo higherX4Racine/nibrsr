@@ -1,0 +1,69 @@
+prop_desc_name,prop_desc_code
+Aircraft,01
+Alcohol,02
+Automobile,03
+Bicycles,04
+Buses,05
+Clothes/ Furs,06
+Computer Hard/ Software,07
+Consumable Goods,08
+Credit/ Debit cards,09
+Drugs/ Narcotics,10
+Drug Equipment,11
+Farm Equipment,12
+Firearms,13
+Gambling Equipment,14
+Industrial Equipment,15
+Household Goods,16
+Jewelry/ Precious Metals,17
+Livestock,18
+Merchandise,19
+Money,20
+Negotiable Instruments,21
+Non Negotiable Instruments,22
+Office Equipment,23
+Other Motor Vehicles,24
+Purse/ Wallet,25
+Radio/ TV/ VCR,26
+Recordings,27
+Recreational Vehicles,28
+Structure/ Single dwelling,29
+Structure/ Other residence,30
+Structure/ Other commercial,31
+Structure/ Other industrial,32
+Structure/ Public,33
+Structure/ Storage,34
+Structure/ Other,35
+Tools,36
+Trucks,37
+Vehicle Parts,38
+Watercraft,39
+Aircraft Parts/ Accessories,41
+Artistic Supplies/ Accessories,42
+Building Materials,43
+Camping/ Hunting/ Fishing Equipment/ Supplies,44
+Chemicals,45
+Collections/ Collectibles,46
+Crops,47
+Documents/ Personal or Business,48
+Explosives,49
+Firearm Accessories,59
+Fuel,64
+Identity Documents,65
+Identity-Intangible,66
+Law Enforcement Equipment,67
+Lawn/ Yard/ Garden Equipment,68
+Logging Equipment,69
+Medical/ Medical Lab Equipment,70
+"Metals, Non-Precious",71
+Musical Instruments,72
+Pets,73
+Photographic/ Optical Equipment,74
+Portable Electronic Communications,75
+Recreational/ Sports Equipment,76
+Other,77
+Trailers,78
+Watercraft Equipment/ Parts/ Accessories,79
+Weapons-Other,80
+Pending Inventory,88
+Special,99

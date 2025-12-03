@@ -1,0 +1,18 @@
+criminal_act_code,criminal_act_name,criminal_act_desc
+A,Simple/Gross Neglect,"Simple/Gross Neglect (unintentionally, intentionally, or knowingly failing to provide food, water, shelter, veterinary care, hoarding, etc.)"
+B,Buying/Receiving,Buying/Receiving
+C,Cultivating/Manufacturing/Publishing,"Cultivating/Manufacturing/Publishing (i.e., production of any type)"
+D,Distributing/Selling,Distributing/Selling
+E,Exploiting Children,Exploiting Children
+F,Organized Abuse,Organized Abuse (Dog Fighting and Cock Fighting)
+G,Other Gang,Other Gang
+I,Intentional Abuse and Torture,"Intentional Abuse and Torture (tormenting, mutilating, maiming, poisoning, or abandonment)"
+J,Juvenile Gang,Juvenile Gang
+N,None/Unknown,None/Unknown
+O,Operating/Promoting/Assisting/Abetting,Operating/Promoting/Assisting/Abetting
+P,Possessing/Concealing,Possessing/Concealing
+R,Stolen Firearm,Stolen Firearm
+S,Animal Sexual Abuse,Animal Sexual Abuse (Bestiality)
+T,Transporting/Transmitting/Importing,Transporting/Transmitting/Importing
+U,Using/Consuming,Using/Consuming
+W,Conspiracy,Conspiracy

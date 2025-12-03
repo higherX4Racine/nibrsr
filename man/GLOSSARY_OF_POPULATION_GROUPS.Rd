@@ -5,7 +5,7 @@
 \alias{GLOSSARY_OF_POPULATION_GROUPS}
 \title{Categories of geographic area in the NIBRS}
 \format{
-an object of type \code{tibble/tbl_df/tbl/data.frame}
+an object of type \code{spec_tbl_df/tbl_df/tbl/data.frame}
 with 17 rows and 3 columns
 \describe{
 \item{population_group_id}{\verb{<int>} an index that may not be consistent across archives}

@@ -4,14 +4,14 @@
 \alias{extract_archived_csv}
 \title{Pull one comma-separated table from a zipped NIBRS file}
 \usage{
-extract_archived_csv(.archive_path, .component_path, .spec)
+extract_archived_csv(.archive_path, .component_path, .spec = NULL)
 }
 \arguments{
 \item{.archive_path}{\verb{<chr>} the full path to the zipped file}
 
 \item{.component_path}{\verb{<chr>} the path, within the archive, to the csv file}
 
-\item{.spec}{\verb{<chr|lst>} the column specification for the csv file}
+\item{.spec}{\verb{<chr|lst|NULL>} the column specification for the csv file, defaults to all characters}
 }
 \value{
 \verb{<tbl>} a data frame with properties defined by \code{.spec}

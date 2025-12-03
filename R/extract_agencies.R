@@ -63,8 +63,7 @@ extract_agencies <- function(.archive_path, .contents = NULL) {
     .text_data <- extract_archived_csv(
         .archive_path,
         stringr::str_subset(.contents$filename,
-                            "agencies\\.csv$"),
-        list(.default = "c")
+                            "agencies\\.csv$")
     )
 
     .date_parser <- readr::col_date(

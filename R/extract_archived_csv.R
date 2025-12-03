@@ -4,17 +4,13 @@
 #'
 #' @param .archive_path `<chr>` the full path to the zipped file
 #' @param .component_path `<chr>` the path, within the archive, to the csv file
-#' @param .spec `<chr|lst>` the column specification for the csv file
+#' @param .spec `<chr|lst|NULL>` the column specification for the csv file, defaults to all characters
 #'
 #' @returns `<tbl>` a data frame with properties defined by `.spec`
 #' @keywords internal
-extract_archived_csv <- function(.archive_path, .component_path, .spec) {
+extract_archived_csv <- function(.archive_path, .component_path, .spec = NULL) {
 
-    if (!is.null(names(.spec))) {
-        names(.spec) <- tolower(names(.spec))
-    }
-
-    .archive_path |>
+    .result <- .archive_path |>
         unz(
             filename = .component_path
         ) |>
@@ -24,8 +20,17 @@ extract_archived_csv <- function(.archive_path, .component_path, .spec) {
         ) |>
         dplyr::rename_with(
             tolower
-        ) |>
-        readr::type_convert(
-            col_types = .spec
         )
+
+    if (!is.null(.spec)) {
+
+        if (!is.null(names(.spec))) {
+            names(.spec) <- tolower(names(.spec))
+        }
+
+        .result <- readr::type_convert(.result,
+                                       col_types = .spec)
+    }
+
+    return(.result)
 }

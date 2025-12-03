@@ -1,0 +1,9 @@
+prop_loss_name,prop_loss_desc
+None,None
+Burned,Burned (includes damage caused in fighting the fire)
+Counterfeited/Forged,Counterfeited/Forged
+Destroyed/Damaged/Vandalized,Destroyed/Damaged/Vandalized
+Recovered,Recovered (to impound property that was previously stolen)
+Seized,Seized (to impound property that was not previously stolen)
+Stolen/Etc,"Stolen/Etc. (includes bribed, defrauded, embezzled, extorted, ransomed, robbed, etc.)"
+Unknown,Unknown
