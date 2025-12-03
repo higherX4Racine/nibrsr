@@ -10,7 +10,7 @@ GLOSSARY_OF_OFFENSE_CODES
 
 ## Format
 
-an object of type `tibble/tbl_df/tbl/data.frame` with 81 rows and 6
+an object of type `spec_tbl_df/tbl_df/tbl/data.frame` with 81 rows and 6
 columns
 
 - Group:

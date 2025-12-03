@@ -11,7 +11,7 @@ GLOSSARY_OF_PARENT_POPULATION_GROUPS
 
 ## Format
 
-an object of type `tibble/tbl_df/tbl/data.frame` with 9 rows and 2
+an object of type `spec_tbl_df/tbl_df/tbl/data.frame` with 9 rows and 2
 columns
 
 - parent_pop_group_code:

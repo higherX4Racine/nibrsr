@@ -11,7 +11,7 @@ GLOSSARY_OF_POPULATION_GROUPS
 
 ## Format
 
-an object of type `tibble/tbl_df/tbl/data.frame` with 17 rows and 3
+an object of type `spec_tbl_df/tbl_df/tbl/data.frame` with 17 rows and 3
 columns
 
 - population_group_id:

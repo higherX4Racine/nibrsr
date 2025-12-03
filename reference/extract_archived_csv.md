@@ -5,7 +5,7 @@ Pull one comma-separated table from a zipped NIBRS file
 ## Usage
 
 ``` r
-extract_archived_csv(.archive_path, .component_path, .spec)
+extract_archived_csv(.archive_path, .component_path, .spec = NULL)
 ```
 
 ## Arguments
@@ -20,7 +20,8 @@ extract_archived_csv(.archive_path, .component_path, .spec)
 
 - .spec:
 
-  `<chr|lst>` the column specification for the csv file
+  `<chr|lst|NULL>` the column specification for the csv file, defaults
+  to all characters
 
 ## Value
 

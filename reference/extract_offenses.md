@@ -27,10 +27,6 @@ an object of class `tibble/tbl_df/tbl/data.frame` with 8 columns
 
   `<int>` The year of the offense
 
-- offense_id:
-
-  `<int>` The unique identification number for the offense
-
 - incident_id:
 
   `<int>` The unique id of the incident that involved the offense
@@ -43,18 +39,20 @@ an object of class `tibble/tbl_df/tbl/data.frame` with 8 columns
 
   `<chr>` either "A" (attempted), "C" (completed), or "U" (unfounded).
 
-- location_id:
+- location_code:
 
-  `<int>` An index into the archive's table of location types
+  `<chr>` A two-digit code that describes the scene where the offense
+  took place
 
 - num_premises_entered:
 
-  `<chr>`
+  `<int>` if a burglary at a hotel or storage facility, the number of
+  units that were violated
 
 - method_entry_code:
 
-  `<chr>`
+  `<chr>`if a burglary, whether entry was forced (F), or not (N)
 
 ## See also
 
-[GLOSSARY_OF_OFFENSE_CODES](https://higherx4racine.github.io/nibrsr/reference/GLOSSARY_OF_OFFENSE_CODES.md)
+[GLOSSARY_OF_OFFENSE_TYPES](https://higherx4racine.github.io/nibrsr/reference/GLOSSARY_OF_OFFENSE_TYPES.md)

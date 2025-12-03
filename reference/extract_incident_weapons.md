@@ -46,5 +46,5 @@ an object of type `tibble/tbl_df/tbl/data.frame` with 5 columns
 
 ## See also
 
-[TYPES_OF_WEAPONS](https://higherx4racine.github.io/nibrsr/reference/TYPES_OF_WEAPONS.md)
+[GLOSSARY_OF_WEAPON_TYPES](https://higherx4racine.github.io/nibrsr/reference/GLOSSARY_OF_WEAPON_TYPES.md)
 for definitions of each weapon code
