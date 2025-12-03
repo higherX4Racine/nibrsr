@@ -1,3 +1,5 @@
+## Copyright (C) 2025 by Higher Expectations for Racine County
+
 #' Load weapon information from an NIBRS archive
 #'
 #' @param .archive_path `<chr>` the full path to the .zip file
@@ -21,14 +23,12 @@ extract_incident_weapons <- function(.archive_path, .contents = NULL) {
 
     list(
         "iiii" = stringr::str_subset(.contents$filename,
-                                     "NIBRS_WEAPON.csv$"),
+                                     "NIBRS_WEAPON\\.csv$"),
         "iccc" = stringr::str_subset(.contents$filename,
-                                     "NIBRS_WEAPON_TYPE.csv$")
+                                     "NIBRS_WEAPON_TYPE\\.csv$")
     ) |>
         purrr::imap(
-            \(.file, .spec) .archive_path |>
-                extract_archived_csv(.file, .spec) |>
-                dplyr::rename_with(tolower)
+            \(.file, .spec) extract_archived_csv(.archive_path, .file, .spec)
         ) |>
         purrr::reduce(
             \(.lhs, .rhs) dplyr::left_join(.lhs, .rhs, by = "weapon_id")

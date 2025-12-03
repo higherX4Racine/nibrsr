@@ -59,15 +59,13 @@ extract_agencies <- function(.archive_path, .contents = NULL) {
     if (is.null(.contents)) {
         .contents <- zip::zip_list(.archive_path)
     }
-    .text_data <- .archive_path |>
-        extract_archived_csv(
-            stringr::str_subset(.contents$filename,
-                                "agencies\\.csv"),
-            c(.default = "c")
-        ) |>
-        dplyr::rename_with(
-            tolower
-        )
+
+    .text_data <- extract_archived_csv(
+        .archive_path,
+        stringr::str_subset(.contents$filename,
+                            "agencies\\.csv$"),
+        list(.default = "c")
+    )
 
     .date_parser <- readr::col_date(
         format = dplyr::if_else(
@@ -79,7 +77,7 @@ extract_agencies <- function(.archive_path, .contents = NULL) {
 
     .text_data |>
         readr::type_convert(
-            col_types =  list(
+            col_types = list(
                 yearly_agency_id = "i",
                 agency_id = "i",
                 data_year = "i",

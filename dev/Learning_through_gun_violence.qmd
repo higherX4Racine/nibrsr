@@ -1,0 +1,135 @@
+---
+title: "Learning through gun violence"
+output: html
+---
+
+```{r}
+#| label: setup
+#| include: false
+set.seed(42L)
+rlang::exec(
+    knitr::opts_chunk$set,
+    !!!hiRx::CHUNK_OPTIONS_FOR_KNITR,
+    cache = TRUE
+)
+```
+
+```{r}
+#| label: identify-files
+NIBRS_DIR <- hiRx::input_path("Downloads", "US Dept of Justice", "NIBRS")
+ARCHIVE_FILES <- dir(NIBRS_DIR, full.names = TRUE)
+```
+
+```{r}
+#| label: examine_contents
+#| dependson:
+#| - identify-files
+
+CONTENTS <- ARCHIVE_FILES |>
+    rlang::set_names(
+        basename(ARCHIVE_FILES)
+    ) |>
+    tibble::enframe(
+        name = "File",
+        value = "Contents"
+    ) |>
+    dplyr::mutate(
+        State = stringr::str_extract(.data$File,
+                                     "^.{2}"),
+        Year = .data$File |>
+            stringr::str_extract("\\d{4}") |>
+            as.integer(),
+        Contents = purrr::map(
+            .data$Contents,
+            zip::zip_list
+        )
+    )
+
+CONTENTS |>
+    dplyr::select(!tidyselect::where(\(.) "list" %in% class(.))) |>
+    knitr::kable()
+```
+
+```{r}
+#| label: extract-wi-2022-information
+#| dependson:
+#| - identify-files
+
+ARCHIVE_FILES <- c(
+    weapons = "NIBRS_WEAPON.csv",
+    weapon_types = "NIBRS_WEAPON_TYPE.csv",
+    offenses = "NIBRS_OFFENSE.csv",
+    incidents = "NIBRS_incident.csv",
+    agencies = "agencies.csv"
+)
+
+WI_MMXXII <- purrr::map(
+    ARCHIVE_FILES,
+    \(.csv_file) {
+        NIBRS_DIR |>
+            file.path("WI-2022.zip") |>
+            nibrsr:::extract_archived_csv(.csv_file,
+                                          c(.default = "c")) |>
+            dplyr::rename_with(tolower)
+    }
+)
+
+str(WI_MMXXII$incidents)
+```
+
+```{r}
+#| label: make-test-archive
+#| dependson:
+#| - extract-wi-2022-information
+
+TEST_ARCHIVE <- list()
+
+TEST_ARCHIVE$weapons <- dplyr::slice_sample(WI_MMXXII$weapons,
+                                            n = 10L)
+
+TEST_ARCHIVE$weapon_types <- dplyr::semi_join(WI_MMXXII$weapon_types,
+                                          TEST_ARCHIVE$weapons,
+                                          by = "weapon_id")
+
+TEST_ARCHIVE$offenses <- dplyr::semi_join(WI_MMXXII$offenses,
+                                          TEST_ARCHIVE$weapons,
+                                          by = "offense_id")
+
+TEST_ARCHIVE$incidents <- dplyr::semi_join(WI_MMXXII$incidents,
+                                          TEST_ARCHIVE$offenses,
+                                          by = "incident_id")
+
+TEST_ARCHIVE$agencies <- dplyr::semi_join(WI_MMXXII$agencies,
+                                          TEST_ARCHIVE$incidents,
+                                          by = "agency_id")
+
+knitr::kable(TEST_ARCHIVE$agencies)
+```
+
+
+```{r}
+#| label: write-test-archive
+#| dependson:
+#| - extract-wi-2022-information
+#| - make-test-archive
+
+withr::with_dir("..", {
+    purrr::iwalk(ARCHIVE_FILES,
+                 \(.csv_file, .key) {
+                     TEST_ARCHIVE[[.key]] |>
+                         dplyr::rename_with(toupper) |>
+                         readr::write_csv(testthat::test_path("data",
+                                                              .csv_file))
+                 })
+    
+    zip::zip(testthat::test_path("data", "reduced_archive.zip"),
+             testthat::test_path("data", ARCHIVE_FILES))
+    
+    "data" |>
+        testthat::test_path(
+            ARCHIVE_FILES
+        ) |>
+        file.remove()
+})
+
+```

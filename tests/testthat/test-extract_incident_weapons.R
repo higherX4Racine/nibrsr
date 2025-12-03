@@ -1,7 +1,6 @@
-test_that("an example data set is read in correctly", {
+test_that("example weapon information is correctly extracted from an archive", {
     "data" |>
-        file.path("reduced_archive.zip") |>
-        test_path() |>
+        test_path("reduced_archive.zip") |>
         extract_incident_weapons() |>
         expect_snapshot()
 })

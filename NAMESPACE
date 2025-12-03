@@ -2,3 +2,5 @@
 
 export(extract_agencies)
 export(extract_incident_weapons)
+export(extract_incidents)
+export(extract_offenses)

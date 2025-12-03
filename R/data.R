@@ -1,5 +1,20 @@
 ## Copyright (C) 2025 by Higher Expectations
 
+#' Categories of criminal offense that are cataloged in the NIBRS
+#'
+#' @format an object of type `tibble/tbl_df/tbl/data.frame`
+#' with 81 rows and 6 columns
+#' \describe{
+#'  \item{Group}{`<chr>` Either "A" (serious crimes) or "B" (not so serious)}
+#'  \item{Category}{`<chr>` A broad category of crime, like "Assault" or "Larceny"}
+#'  \item{Offense}{`<chr>` A more specific category of crime, like "Pocket-picking" or "Purse-snatching"}
+#'  \item{Code}{`<chr>` A three-character code for the offense, either 3-digit or 2-digit-plus-letter}
+#'  \item{Against}{`<chr>` Either "Person," "Property", or "Society." I chose for Group "B" crimes.}
+#'  \item{NCIC Code}{`<lst>` zero or more codes in the NCIC that count as this type of offense.}
+#' }
+#' @source <https://le.fbi.gov/informational-tools/ucr/ucr-technical-specifications-user-manuals-and-data-tools>
+"GLOSSARY_OF_OFFENSE_CODES"
+
 #' Categories of containing geographic areas in the NIBRS
 #'
 #' These categories combine both political organization (town, city, county) and
