@@ -26,22 +26,35 @@ extract_incidents <- function(.archive_path, .contents = NULL) {
         .contents <- zip::zip_list(.archive_path)
     }
 
-    .archive_path |>
-        extract_archived_csv(
-            stringr::str_subset(.contents$filename,
-                                "NIBRS_incident\\.csv$"),
+    .text_data <- extract_archived_csv(
+        .archive_path,
+        stringr::str_subset(.contents$filename,
+                            "NIBRS_incident\\.csv$")
+    )
+
+    .date_columns <- .text_data |>
+        dplyr::select(
+            tidyselect::matches("date$")
+        ) |>
+        purrr::map(
+            simplistic_date_formatter
+        )
+
+    readr::type_convert(
+        .text_data,
+        col_types = c(
             list(
                 data_year = "i",
                 agency_id = "i",
                 incident_id = "i",
                 nibrs_month_id = "i",
                 cargo_theft_flag = "c",
-                incident_date = readr::col_date(format = "%Y-%m-%d"),
                 report_date_flag = "c",
                 incident_hour =  "i",
                 cleared_except_id = "i",
-                cleared_except_date = readr::col_date(format = "%Y-%m-%d"),
                 .default = "-"
-            )
+            ),
+            .date_columns
         )
+    )
 }

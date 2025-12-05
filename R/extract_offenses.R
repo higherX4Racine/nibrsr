@@ -29,7 +29,7 @@ extract_offenses <- function(.archive_path, .contents = NULL) {
                             "NIBRS_OFFENSE\\.csv$")
     )
 
-    .NO_CODE <- "offense_type_id" %in% names(.offenses)
+    .NO_CODE <- !("offense_code" %in% names(.offenses))
 
     .spec <- c(
         list(
@@ -56,7 +56,7 @@ extract_offenses <- function(.archive_path, .contents = NULL) {
         )
 
     if (.NO_CODE) {
-        .offenses <- .archive_path |>
+        .offense_types <- .archive_path |>
             extract_archived_csv(
                 stringr::str_subset(.contents$filename,
                                     "NIBRS_OFFENSE_TYPE\\.csv"),
@@ -66,11 +66,13 @@ extract_offenses <- function(.archive_path, .contents = NULL) {
             dplyr::select(
                 "offense_type_id",
                 "offense_code"
-            ) |>
-            dplyr::right_join(
-                .offenses,
-                by = "offense_type_id"
             )
+
+        .offenses <- dplyr::left_join(
+            .offenses,
+            .offense_types,
+            by = "offense_type_id"
+        )
     }
 
     .offenses |>
@@ -94,5 +96,9 @@ extract_offenses <- function(.archive_path, .contents = NULL) {
             "location_code",
             "num_premises_entered",
             "method_entry_code"
+        ) |>
+        dplyr::mutate(
+            offense_code = stringr::str_remove(.data$offense_code,
+                                               "^0+")
         )
 }

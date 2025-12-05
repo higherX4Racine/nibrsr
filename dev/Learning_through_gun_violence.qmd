@@ -14,6 +14,8 @@ rlang::exec(
 )
 ```
 
+## Access local downloads
+
 ```{r}
 #| label: identify-files
 NIBRS_DIR <- hiRx::input_path("Downloads", "US Dept of Justice", "NIBRS")
@@ -25,7 +27,7 @@ ARCHIVE_FILES <- dir(NIBRS_DIR, full.names = TRUE)
 #| dependson:
 #| - identify-files
 
-CONTENTS <- ARCHIVE_FILES |>
+TOC <- ARCHIVE_FILES |>
     rlang::set_names(
         basename(ARCHIVE_FILES)
     ) |>
@@ -44,97 +46,11 @@ CONTENTS <- ARCHIVE_FILES |>
             zip::zip_list
         )
     )
-
-CONTENTS |>
-    dplyr::select(!tidyselect::where(\(.) "list" %in% class(.))) |>
-    knitr::kable()
 ```
 
-```{r}
-#| label: extract-wi-2022-information
-#| dependson:
-#| - identify-files
+## Actually use the data for research
 
-ARCHIVE_FILES <- c(
-    weapons = "NIBRS_WEAPON.csv",
-    weapon_types = "NIBRS_WEAPON_TYPE.csv",
-    offenses = "NIBRS_OFFENSE.csv",
-    locations = "NIBRS_LOCATION_TYPE.csv",
-    incidents = "NIBRS_incident.csv",
-    agencies = "agencies.csv"
-)
-
-WI_MMXXII <- purrr::map(
-    ARCHIVE_FILES,
-    \(.csv_file) {
-        NIBRS_DIR |>
-            file.path("WI-2022.zip") |>
-            nibrsr:::extract_archived_csv(.csv_file)
-    }
-)
-
-str(WI_MMXXII$incidents)
-```
-
-```{r}
-#| label: make-test-archive
-#| dependson:
-#| - extract-wi-2022-information
-
-TEST_ARCHIVE <- list()
-
-TEST_ARCHIVE$weapons <- dplyr::slice_sample(WI_MMXXII$weapons,
-                                            n = 10L)
-
-TEST_ARCHIVE$weapon_types <- dplyr::semi_join(WI_MMXXII$weapon_types,
-                                              TEST_ARCHIVE$weapons,
-                                              by = "weapon_id")
-
-TEST_ARCHIVE$offenses <- dplyr::semi_join(WI_MMXXII$offenses,
-                                          TEST_ARCHIVE$weapons,
-                                          by = "offense_id")
-
-TEST_ARCHIVE$locations <- dplyr::semi_join(WI_MMXXII$locations,
-                                           TEST_ARCHIVE$offenses,
-                                           by = "location_id")
-
-TEST_ARCHIVE$incidents <- dplyr::semi_join(WI_MMXXII$incidents,
-                                           TEST_ARCHIVE$offenses,
-                                           by = "incident_id")
-
-TEST_ARCHIVE$agencies <- dplyr::semi_join(WI_MMXXII$agencies,
-                                          TEST_ARCHIVE$incidents,
-                                          by = "agency_id")
-
-knitr::kable(TEST_ARCHIVE$agencies)
-```
-
-```{r}
-#| label: write-test-archive
-#| dependson:
-#| - extract-wi-2022-information
-#| - make-test-archive
-
-withr::with_dir("..", {
-    purrr::iwalk(ARCHIVE_FILES,
-                 \(.csv_file, .key) {
-                     TEST_ARCHIVE[[.key]] |>
-                         dplyr::rename_with(toupper) |>
-                         readr::write_csv(testthat::test_path("data",
-                                                              .csv_file))
-                 })
-    
-    zip::zip(testthat::test_path("data", "reduced_archive.zip"),
-             testthat::test_path("data", ARCHIVE_FILES))
-    
-    "data" |>
-        testthat::test_path(
-            ARCHIVE_FILES
-        ) |>
-        file.remove()
-})
-
-```
+### Incidents involving guns and violence
 
 ```{r}
 #| label: load-violent-gun-crimes
@@ -152,30 +68,37 @@ VIOLENCE <- dplyr::filter(
     .data$crime_against == "Person"
 )
 
-VIOLENT_GUN_CRIMES <- CONTENTS$File |>
-    purrr::map2(
-        CONTENTS$Contents,
-        \(.fn, .contents) {
-            
-            .wpn <- NIBRS_DIR |>
-                file.path(.fn) |>
-                nibrsr::extract_incident_weapons(.contents) |>
+VIOLENT_GUN_CRIMES <- TOC |>
+    dplyr::filter(
+        stringr::str_detect(.data$File,
+                            "^WI")
+    ) |>
+    purrr::pmap(
+        \(File, Contents, ...) {
+            .fn <- file.path(NIBRS_DIR,
+                             File)
+            .wpn <- .fn |>
+                nibrsr::extract_incident_weapons(Contents) |>
                 dplyr::semi_join(GUNS, by = "weapon_code")
             
-            .off <- NIBRS_DIR |>
-                file.path(.fn) |>
-                nibrsr::extract_offenses(.contents) |>
+            .off <- .fn |>
+                nibrsr::extract_offenses(Contents) |>
                 dplyr::semi_join(VIOLENCE, by = "offense_code") |>
                 dplyr::semi_join(.wpn, by = "offense_id")
             
-            .inc <- NIBRS_DIR |>
-                file.path(.fn) |>
-                nibrsr::extract_incidents(.contents) |>
+            .inc <- .fn |>
+                nibrsr::extract_incidents(Contents) |>
                 dplyr::semi_join(.off, by = "incident_id")
             
             .inc |>
-                dplyr::left_join(.off, by = c("data_year", "incident_id")) |>
-                dplyr::left_join(.wpn, by = c("data_year", "offense_id"))
+                dplyr::left_join(
+                    .off,
+                    by = c("data_year", "incident_id")
+                ) |>
+                dplyr::left_join(
+                    .wpn,
+                    by = c("data_year", "offense_id")
+                )
         }
     ) |>
     purrr::list_rbind()
@@ -184,7 +107,7 @@ VIOLENT_GUN_CRIMES |>
     dplyr::slice_sample(n = 10) |>
     knitr::kable()
 ```
-        
+
 ```{r}
 #| label: look-at-date-distributions
 VIOLENT_GUN_CRIMES |>
@@ -242,6 +165,9 @@ VIOLENT_GUN_CRIMES |>
 
 ```{r}
 #| label: look-at-time-distributions
+#| dependson:
+#| - load-violent-gun-crimes
+
 VIOLENT_GUN_CRIMES |>
     dplyr::inner_join(
         nibrsr::GLOSSARY_OF_OFFENSE_TYPES,
@@ -295,4 +221,180 @@ VIOLENT_GUN_CRIMES |>
         scales = "free_y"
     ) +
     ggplot2::theme_bw()
+```
+
+### Agencies in Wisconsin
+
+```{r}
+#| label: load-wi-agencies
+#| dependson:
+#| - identify-files
+
+WI_AGENCIES <- TOC |>
+    dplyr::filter(
+        stringr::str_detect(.data$File, "WI")
+    ) |>
+    dplyr::select(
+        "File", "Contents"
+    ) |>
+    purrr::pmap(\(File, Contents) nibrsr::extract_agencies(
+        file.path(NIBRS_DIR, File),
+        Contents
+    )) |>
+    purrr::list_rbind()
+
+WI_AGENCIES |>
+    dplyr::inner_join(
+        nibrsr::GLOSSARY_OF_POPULATION_GROUPS,
+        by = "population_group_code"
+    ) |>
+    dplyr::mutate(
+        Code = .data$population_group_code |>
+            stringr::str_extract("^\\d+") |>
+            as.integer(),
+        Flag = stringr::str_extract(.data$population_group_code, "\\D?$"),
+        Suburban = dplyr::if_else(.data$suburban_area_flag,
+                                  "Suburban",
+                                  "Not suburban")
+    ) |>
+    dplyr::summarize(
+        People = sum(.data$population, na.rm = TRUE),
+        .by = c("Code", "Flag", "population_group_desc", "Suburban", "data_year")
+    ) |>
+    dplyr::summarize(
+        People = .data$People |> median() |> scales::label_comma(accuracy = 1)(),
+        .by = c("Code", "Flag", "population_group_desc", "Suburban")
+    ) |>
+    dplyr::arrange(
+        .data$Code,
+        .data$Flag
+    ) |>
+    dplyr::select(
+        `Community Type` = "population_group_desc",
+        "Suburban",
+        "People"
+    ) |>
+    tidyr::pivot_wider(
+        names_from = "Suburban",
+        values_from = "People",
+        values_fill = "-"
+    ) |>
+    knitr::kable(
+        align = "lrr"
+    )
+```
+
+```{r}
+#| label: define-racine-agencies
+#| dependson:
+#| - load-wi-agencies
+
+RACINE_AGENCIES <- tibble::tribble(
+    ~ agency_id,	~ Name,	                     ~ Municipality,   ~ Place,
+         21194L,	"Burlington PD",	         "Burlington",     "West of I-94",
+         21195L,	"Racine PD",	             "Racine",         "City",
+         21196L,	"Caledonia PD",	             "Caledonia",      "Suburbs",
+         21200L,	"Mount Pleasant Village PD", "Mount Pleasant", "Suburbs",
+         21201L,	"Sturtevant Village PD",     "Sturtevant",     "Suburbs",
+         27657L,	"Wind Point PD",	         "Wind Point",     "Suburbs",
+         28556L,	"Waterford PD",	             "Waterford Town", "West of I-94",
+         21193L,	"Racine Co Sheriff",         "Racine",         "West of I-94"        
+)
+
+WI_PLACES <- WI_AGENCIES |>
+    dplyr::left_join(RACINE_AGENCIES,
+                     by = "agency_id") |>
+    dplyr::mutate(
+        Place = dplyr::coalesce(.data$Place,
+                                "Wisconsin")
+    ) |>
+    dplyr::summarize(
+        People = sum(.data$population, na.rm = TRUE),
+        .by = c("Place", "data_year")
+    )
+
+WI_PLACES |>
+    dplyr::arrange(
+        .data$data_year,
+        .data$Place
+    ) |>
+    tidyr::pivot_wider(
+        names_from = "data_year",
+        values_from = "People",
+        values_fill = 0L
+    ) |>
+    knitr::kable()
+```
+
+### Compare Racine to other places
+
+```{r}
+#| label: compare-racine
+#| dependson: 
+#| - load-violent-gun-crimes
+#| - load-wi-agencies
+#| - define-racine-agencies
+
+gun_violence_by_place <- VIOLENT_GUN_CRIMES |>
+    dplyr::left_join(
+        RACINE_AGENCIES,
+        by = "agency_id"
+    ) |>
+    dplyr::mutate(
+        Place = dplyr::coalesce(.data$Place,
+                                "Wisconsin")
+    ) |>
+    dplyr::count(
+        Year = lubridate::year(.data$incident_date),
+        .data$Place,
+        name = "Number of Offenses"
+    ) |>
+    dplyr::inner_join(
+        WI_PLACES,
+        by = c(Year = "data_year", "Place")
+    ) |>
+    dplyr::mutate(
+        `Rate per 100K` = .data$`Number of Offenses` * 1e5 / .data$People
+    )
+
+gun_violence_by_place |>
+    dplyr::select(
+        "Place",
+        "Year",
+        "Rate per 100K"
+    ) |>
+    tidyr::pivot_wider(
+        names_from = "Place",
+        values_from = "Rate per 100K"
+    ) |>
+    knitr::kable()
+
+gun_violence_by_place |>
+    ggplot2::ggplot(
+        ggplot2::aes(x = .data$Year,
+                     y = .data$`Rate per 100K`,
+                     color = .data$Place)
+    ) +
+    ggplot2::geom_line(
+        linewidth = hiRx::PHI,
+        lineend = "round",
+        linejoin = "round"
+    ) +
+    ggplot2::scale_x_continuous(
+        name = NULL,
+        breaks = scales::breaks_width(2),
+        minor_breaks = scales::breaks_width(1),
+    ) +
+    ggplot2::scale_y_continuous(
+        limits = c(0, NA)
+    ) +
+    ggplot2::scale_color_manual(
+        values = c(
+            City = hiRx::higher_ex_cols("Racine Blue"),
+            Suburbs = hiRx::higher_ex_cols("Mount Pleasant Green"),
+            `West of I-94` = hiRx::higher_ex_cols("Sturtevant Brown"),
+            Wisconsin = "red"
+        )
+    ) +
+    ggplot2::theme_minimal()
 ```

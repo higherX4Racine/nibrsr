@@ -66,63 +66,60 @@ extract_agencies <- function(.archive_path, .contents = NULL) {
                             "agencies\\.csv$")
     )
 
-    .date_parser <- readr::col_date(
-        format = dplyr::if_else(
-            any(stringr::str_detect(.text_data$nibrs_cert_date, "[a-zA-Z]")),
-            "%d-%b-%y",
-            "%Y-%m-%d"
+    .date_columns <- .text_data |>
+        dplyr::select(
+            tidyselect::matches("date$")
+        ) |>
+        purrr::map(
+            simplistic_date_formatter
         )
-    )
 
     .text_data |>
         readr::type_convert(
-            col_types = list(
-                yearly_agency_id = "i",
-                agency_id = "i",
-                data_year = "i",
-                ori = "c",
-                legacy_ori = "c",
-                covered_by_legacy_ori = "c",
-                direct_contributor_flag = "c",
-                dormant_flag = "c",
-                dormant_year = "-",
-                reporting_type = "c",
-                ucr_agency_name = "c",
-                ncic_agency_name = "c",
-                pub_agency_name = "c",
-                pub_agency_unit = "c",
-                agency_status = "c",
-                state_postal_abbr = "c",
-                division_code = "i",
-                region_code = "i",
-                agency_type_name = "c",
-                population = "i",
-                submitting_agency_id = "i",
-                sai = "c",
-                submitting_agency_name = "c",
-                suburban_area_flag = "c",
-                population_group_code = "c",
-                parent_pop_group_code = "i",
-                mip_flag = "c",
-                summary_rape_def = "c",
-                pe_reported_flag = "c",
-                male_officer = "i",
-                male_civilian = "i",
-                female_officer = "i",
-                female_civilian = "i",
-                nibrs_cert_date = .date_parser,
-                nibrs_start_date = .date_parser,
-                nibrs_leoka_start_date = .date_parser,
-                nibrs_ct_start_date = .date_parser,
-                nibrs_multi_bias_start_date = .date_parser,
-                nibrs_off_eth_start_date = .date_parser,
-                covered_flag = "c",
-                county_name = "c",
-                msa_name = "c",
-                publishable_flag = "c",
-                participated = "c",
-                nibrs_participated = "c",
-                .default = "-"
+            col_types = c(
+                list(
+                    yearly_agency_id = "i",
+                    agency_id = "i",
+                    data_year = "i",
+                    ori = "c",
+                    legacy_ori = "c",
+                    covered_by_legacy_ori = "c",
+                    direct_contributor_flag = "c",
+                    dormant_flag = "c",
+                    dormant_year = "-",
+                    reporting_type = "c",
+                    ucr_agency_name = "c",
+                    ncic_agency_name = "c",
+                    pub_agency_name = "c",
+                    pub_agency_unit = "c",
+                    agency_status = "c",
+                    state_postal_abbr = "c",
+                    division_code = "i",
+                    region_code = "i",
+                    agency_type_name = "c",
+                    population = "i",
+                    submitting_agency_id = "i",
+                    sai = "c",
+                    submitting_agency_name = "c",
+                    suburban_area_flag = "c",
+                    population_group_code = "c",
+                    parent_pop_group_code = "i",
+                    mip_flag = "c",
+                    summary_rape_def = "c",
+                    pe_reported_flag = "c",
+                    male_officer = "i",
+                    male_civilian = "i",
+                    female_officer = "i",
+                    female_civilian = "i",
+                    covered_flag = "c",
+                    county_name = "c",
+                    msa_name = "c",
+                    publishable_flag = "c",
+                    participated = "c",
+                    nibrs_participated = "c",
+                    .default = "-"
+                ),
+                .date_columns
             )
         ) |>
         dplyr::mutate(

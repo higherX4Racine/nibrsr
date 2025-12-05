@@ -119,7 +119,7 @@
 #' population size.
 #'
 #' @format an object of type `spec_tbl_df/tbl_df/tbl/data.frame`
-#' with 17 rows and 3 columns
+#' with 24 rows and 3 columns
 #' \describe{
 #'  \item{population_group_id}{`<int>` an index that may not be consistent across archives}
 #'  \item{population_group_code}{`<chr>` a digit-plus-optional-letter code that may be consistent}

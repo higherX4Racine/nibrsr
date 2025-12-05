@@ -1,0 +1,200 @@
+---
+title: "Build test archives"
+author: "Ben Taft"
+format: html
+---
+
+```{r}
+#| label: setup
+#| include: false
+set.seed(42L)
+rlang::exec(
+    knitr::opts_chunk$set,
+    !!!hiRx::CHUNK_OPTIONS_FOR_KNITR,
+    cache = TRUE
+)
+
+```
+
+```{r}
+#| label: define-helpers
+
+create_new_subtable <- function(.new_collection, .old_collection, .keys) {
+    if (.keys$join %in% names(.old_collection[[.keys$lhs]])) {
+        return(
+            dplyr::semi_join(.old_collection[[.keys$lhs]],
+                             .new_collection[[.keys$rhs]],
+                             by = .keys$join)
+        )
+    }
+    return(NULL)
+}
+
+create_test_archive <- function(.subtables, .tasks, .initial) {
+    .tasks |>
+        purrr::reduce(
+            \(.previous, .keys) {
+                .progress <- create_new_subtable(.previous,
+                                                 .subtables,
+                                                 .keys)
+                if (!is.null(.progress)) {
+                    return(
+                        c(
+                            .previous,
+                            rlang::list2("{.keys$lhs}" := .progress)
+                        )
+                    )
+                }
+                return(.previous)
+            },
+            .init = .initial
+        )
+}
+
+```
+
+```{r}
+#| label: define-test-parameters
+TEST_TASKS <- list(
+    weapon_types = list(rhs = "weapons", join = "weapon_id"),
+    offenses = list(rhs = "weapons", join = "offense_id"),
+    offense_types = list(rhs = "offenses", join = "offense_type_id"),
+    locations = list(rhs = "offenses", join = "location_id"),
+    incidents = list(rhs = "offenses", join = "incident_id"),
+    agencies = list(rhs = "incidents", join = "agency_id")
+) |>
+    purrr::imap(
+        \(.args, .label) c(lhs = .label, .args)
+    )
+
+TEST_ARCHIVE_FILES <- c(
+    weapons = "NIBRS_WEAPON.csv",
+    weapon_types = "NIBRS_WEAPON_TYPE.csv",
+    offenses = "NIBRS_OFFENSE.csv",
+    offense_types = "NIBRS_OFFENSE_TYPE.csv",
+    locations = "NIBRS_LOCATION_TYPE.csv",
+    incidents = "NIBRS_incident.csv",
+    agencies = "agencies.csv"
+)
+```
+
+```{r}
+#| label: extract-wi-information-for-tests
+#| dependson:
+#| - define-test-parameters
+
+NIBRS_DIR <- hiRx::input_path("Downloads", "US Dept of Justice", "NIBRS")
+
+WI_FOR_TESTS <- purrr::map(
+    list(
+        new = "WI-2022.zip",
+        old = "WI-2016.zip"
+    ),
+    \(.archive)  {
+        purrr::map(
+            TEST_ARCHIVE_FILES,
+            \(.csv_file) {
+                .archive_file <- file.path(NIBRS_DIR, .archive)
+                nibrsr:::extract_archived_csv(
+                    .archive_file,
+                    .archive_file |>
+                        zip::zip_list() |>
+                        dplyr::pull("filename") |>
+                        stringr::str_subset(.csv_file)
+                )
+            }
+        )
+    }
+)
+
+WI_FOR_TESTS |>
+    purrr::map(
+        \(.) dplyr::slice_sample(.$offenses, n = 5)
+    ) |>
+    purrr::list_rbind() |>
+    knitr::kable()
+```
+
+```{r}
+#| label: make-test-archive
+#| dependson:
+#| - define-helpers
+#| - define-test-parameters
+#| - extract-wi-information-for-tests
+
+TEST_ARCHIVES <- purrr::map(
+    WI_FOR_TESTS,
+    \(.wi_data) create_test_archive(
+        .wi_data,
+        .tasks = TEST_TASKS,
+        .initial = list(
+            weapons = dplyr::slice_sample(.wi_data$weapons,
+                                          n = 10)
+        )
+    )
+)
+
+TEST_ARCHIVES |>
+    purrr::map(\(.collection) {
+        .collection |>
+            purrr::map(
+                \(.subtable) {
+                    .subtable |>
+                        dim() |>
+                        rlang::set_names(c("rows", "columns")) |>
+                        tibble::as_tibble_row()
+                }
+            ) |>
+            purrr::list_rbind(
+                names_to = "subtable"
+            )
+    }) |>
+    purrr::list_rbind(
+        names_to = "style"
+    ) |>
+    knitr::kable()
+```
+
+```{r}
+#| label: write-test-archive
+#| dependson:
+#| - define-test-parameters
+#| - make-test-archive
+
+withr::with_dir("..", {
+    
+    purrr::iwalk(
+        TEST_ARCHIVES,
+        \(.test_archive, .test_label) {
+            
+            withr::with_dir(testthat::test_path("data"), {
+
+                if (!dir.exists(.test_label)) {
+                    dir.create(.test_label)
+                }
+
+                .relevant_files <- .test_archive |>
+                    names() |>
+                    purrr::map(\(.) TEST_ARCHIVE_FILES[[.]])
+                
+                purrr::iwalk(
+                    .relevant_files,
+                    \(.csv_file, .key) {
+                        .test_archive[[.key]] |>
+                            dplyr::rename_with(toupper ) |>
+                            readr::write_csv(file.path(.test_label,
+                                                       .csv_file))
+                    }
+                )
+                
+                zip::zip(paste0(.test_label,
+                                "_style_archive.zip"),
+                         .test_label)
+                
+                unlink(.test_label, recursive = TRUE)
+            })
+        })
+})
+
+```
+

@@ -1,7 +1,7 @@
 offense_code,offense_name,crime_against,ct_flag,hc_flag,hc_code,offense_category_name,offense_group
-09A,Murder and Nonnegligent Manslaughter,Person,FALSE,TRUE,01,Homicide Offenses,A
-09B,Negligent Manslaughter,Person,FALSE,TRUE,,Homicide Offenses,A
-09C,Justifiable Homicide,Person,FALSE,FALSE,,Homicide Offenses,A
+9A,Murder and Nonnegligent Manslaughter,Person,FALSE,TRUE,01,Homicide Offenses,A
+9B,Negligent Manslaughter,Person,FALSE,TRUE,,Homicide Offenses,A
+9C,Justifiable Homicide,Person,FALSE,FALSE,,Homicide Offenses,A
 100,Kidnapping/Abduction,Person,FALSE,TRUE,,Kidnapping/Abduction,A
 101,Treason,Society,FALSE,TRUE,,Other Offenses,A
 103,Espionage,Society,FALSE,TRUE,,Other Offenses,A
@@ -16,7 +16,7 @@ offense_code,offense_name,crime_against,ct_flag,hc_flag,hc_code,offense_category
 200,Arson,Property,FALSE,TRUE,08,Arson,A
 210,Extortion/Blackmail,Property,TRUE,TRUE,,Extortion/Blackmail,A
 220,Burglary/Breaking & Entering,Property,TRUE,TRUE,05,Burglary/Breaking & Entering,A
-23*,Not Specified,Property,FALSE,TRUE,06,Larceny/Theft Offenses,A
+23,Not Specified,Property,FALSE,TRUE,06,Larceny/Theft Offenses,A
 23A,Pocket-picking,Property,FALSE,TRUE,,Larceny/Theft Offenses,A
 23B,Purse-snatching,Property,FALSE,TRUE,,Larceny/Theft Offenses,A
 23C,Shoplifting,Property,FALSE,TRUE,,Larceny/Theft Offenses,A
